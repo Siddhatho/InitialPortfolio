@@ -3,9 +3,8 @@ import { Space_Grotesk, Geist } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
-import Footer from "@/components/layout/Footer";
-import Navbar from "@/components/layout/Navbar";
 import StructuredData from "@/components/seo/StructuredData";
+import SiteChrome from "@/components/layout/SiteChrome";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
@@ -61,9 +60,7 @@ export default function RootLayout({
     >
       <body className="font-body antialiased bg-brand-bg text-brand-text">
         <StructuredData />
-        <Navbar />
-        <div className="min-h-screen">{children}</div>
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
