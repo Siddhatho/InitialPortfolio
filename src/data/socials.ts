@@ -1,19 +1,37 @@
 import type { Social } from "@/types";
 
+import {
+  EMAIL,
+  GITHUB,
+  LINKEDIN,
+  TWITTER,
+  WHATSAPP,
+} from "@/data/contact";
+
 export const socials: Social[] = [
   {
     label: "GitHub",
-    href: "https://github.com/placeholder",
+    href: GITHUB,
     icon: "github",
   },
   {
     label: "LinkedIn",
-    href: "https://linkedin.com/in/placeholder",
+    href: LINKEDIN,
     icon: "linkedin",
   },
   {
+    label: "X",
+    href: TWITTER,
+    icon: "twitter",
+  },
+  {
+    label: "WhatsApp",
+    href: WHATSAPP,
+    icon: "whatsapp",
+  },
+  {
     label: "Email",
-    href: "mailto:placeholder@example.com",
+    href: `mailto:${EMAIL}`,
     icon: "mail",
   },
 ];

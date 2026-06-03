@@ -1,11 +1,14 @@
 import ContactForm from "@/components/contact/ContactForm";
-
-const EMAIL = "siddharthosarker219@email.com";
-const GITHUB = "https://github.com/Siddhatho";
-const LINKEDIN = "https://www.linkedin.com/in/siddhartho-sarker-b5452822a/";
-const WHATSAPP = "https://wa.me/8801875943580";
-const GH_USER = "Siddhatho";
-const LINKEDIN_HANDLE = "siddhartho-sarker-b5452822a";
+import {
+  EMAIL,
+  GITHUB,
+  GH_USER,
+  LINKEDIN,
+  LINKEDIN_HANDLE,
+  TWITTER,
+  TWITTER_HANDLE,
+  WHATSAPP,
+} from "@/data/contact";
 
 const SOCIAL_LINKS = [
   { label: "✉ EMAIL", href: `mailto:${EMAIL}`, external: false },
@@ -19,6 +22,7 @@ const SOCIAL_LINKS = [
     href: LINKEDIN,
     external: true,
   },
+  { label: `𝕏 x.com/${TWITTER_HANDLE}`, href: TWITTER, external: true },
   { label: "💬 WhatsApp", href: WHATSAPP, external: true },
 ] as const;
 

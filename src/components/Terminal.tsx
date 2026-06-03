@@ -8,12 +8,14 @@ import {
   type KeyboardEvent,
 } from "react";
 
-const EMAIL = "siddharthosarker219@email.com";
-const GITHUB = "https://github.com/Siddhatho";
-const LINKEDIN =
-  "https://www.linkedin.com/in/siddhartho-sarker-b5452822a/";
-const WHATSAPP = "https://wa.me/8801875943580";
-const GH_USER = "Siddhatho";
+import {
+  EMAIL,
+  GITHUB,
+  GH_USER,
+  LINKEDIN,
+  TWITTER,
+  WHATSAPP,
+} from "@/data/contact";
 
 let openTerminalHandler: (() => void) | null = null;
 
@@ -31,7 +33,7 @@ type CommandHandler = (args: string[]) => string | void;
 function buildCommands(close: () => void): Record<string, CommandHandler> {
   return {
     help: () =>
-      "Commands: whoami · ls · projects · skills · contact · now · github · linkedin · clear · exit",
+      "Commands: whoami · ls · projects · skills · contact · now · github · linkedin · twitter · clear · exit",
     whoami: () =>
       "siddartho — CSE student, software & AI engineer · Dhaka 🇧🇩",
     ls: () =>
@@ -41,7 +43,7 @@ function buildCommands(close: () => void): Record<string, CommandHandler> {
     skills: () =>
       "Frontend: Next.js React TypeScript Tailwind\nBackend: Django Flask MySQL REST\nAI/ML: Python LLM Prompt Engineering\nEmbedded: Arduino C++ Sensors Robotics",
     contact: () =>
-      `email: ${EMAIL}\ngithub: ${GITHUB}\nlinkedin: ${LINKEDIN}\nwhatsapp: ${WHATSAPP}`,
+      `email: ${EMAIL}\ngithub: ${GITHUB}\nlinkedin: ${LINKEDIN}\ntwitter: ${TWITTER}\nwhatsapp: ${WHATSAPP}`,
     now: () =>
       "📍 Dhaka, Bangladesh\n🔨 Building: RAG pipeline + LLM fine-tuning\n📚 Reading: RLHF papers\n🎯 2026: Ship 2 open-source AI tools\n⚡ Uptime: 3+ years · still going",
     github: () => {
@@ -51,6 +53,10 @@ function buildCommands(close: () => void): Record<string, CommandHandler> {
     linkedin: () => {
       window.open(LINKEDIN, "_blank", "noopener,noreferrer");
       return LINKEDIN;
+    },
+    twitter: () => {
+      window.open(TWITTER, "_blank", "noopener,noreferrer");
+      return TWITTER;
     },
     clear: () => {
       return "__CLEAR__";

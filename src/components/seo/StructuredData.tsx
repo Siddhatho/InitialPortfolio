@@ -1,14 +1,20 @@
+import {
+  EMAIL,
+  GITHUB,
+  LINKEDIN,
+  TWITTER,
+  WHATSAPP,
+} from "@/data/contact";
+
 export default function StructuredData() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Siddartho Sarker Bipro",
     url: "https://siddartho.vercel.app",
+    email: EMAIL,
     jobTitle: "Software Engineer",
-    sameAs: [
-      "https://github.com/placeholder",
-      "https://linkedin.com/in/placeholder",
-    ],
+    sameAs: [GITHUB, LINKEDIN, TWITTER, WHATSAPP],
   };
 
   return (

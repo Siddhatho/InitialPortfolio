@@ -1,4 +1,4 @@
-const GH_USER = "Siddhatho";
+import { GH_USER } from "@/data/contact";
 
 type TimelineItem = {
   period: string;
