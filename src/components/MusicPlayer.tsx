@@ -20,17 +20,38 @@ export default function MusicPlayer() {
     audio.volume = INITIAL_VOLUME;
     audioRef.current = audio;
 
+    if (!hasUrl) {
+      return () => {
+        audio.pause();
+        audio.src = "";
+        audioRef.current = null;
+      };
+    }
+
+    audio.src = MUSIC_URL;
+
+    const tryPlay = () => {
+      void audio.play().catch(() => {});
+    };
+
+    tryPlay();
+
+    const unlock = () => {
+      tryPlay();
+    };
+
+    document.addEventListener("click", unlock, { once: true });
+    document.addEventListener("touchstart", unlock, { once: true, passive: true });
+    document.addEventListener("mousemove", unlock, { once: true, passive: true });
+
     return () => {
+      document.removeEventListener("click", unlock);
+      document.removeEventListener("touchstart", unlock);
+      document.removeEventListener("mousemove", unlock);
       audio.pause();
       audio.src = "";
       audioRef.current = null;
     };
-  }, []);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !hasUrl) return;
-    audio.src = MUSIC_URL;
   }, [hasUrl]);
 
   useEffect(() => {
@@ -44,32 +65,11 @@ export default function MusicPlayer() {
     if (!audio || !hasUrl) return;
 
     if (playing) {
-      void audio.play().catch(() => setPlaying(false));
+      void audio.play().catch(() => {});
     } else {
       audio.pause();
     }
   }, [playing, hasUrl]);
-
-  useEffect(() => {
-    if (!hasUrl) return;
-
-    const unlockAutoplay = () => {
-      const audio = audioRef.current;
-      if (!audio) return;
-      setPlaying(true);
-      void audio.play().catch(() => setPlaying(false));
-    };
-
-    document.addEventListener("click", unlockAutoplay, { once: true });
-    document.addEventListener("keydown", unlockAutoplay, { once: true });
-    document.addEventListener("scroll", unlockAutoplay, { once: true });
-
-    return () => {
-      document.removeEventListener("click", unlockAutoplay);
-      document.removeEventListener("keydown", unlockAutoplay);
-      document.removeEventListener("scroll", unlockAutoplay);
-    };
-  }, [hasUrl]);
 
   const togglePlay = () => {
     if (!hasUrl) return;
