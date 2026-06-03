@@ -3,11 +3,12 @@ import { Space_Grotesk, Geist } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
+import PortfolioShell from "@/components/layout/PortfolioShell";
 import StructuredData from "@/components/seo/StructuredData";
 import SiteChrome from "@/components/layout/SiteChrome";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -20,7 +21,7 @@ const geistSans = GeistSans;
 
 const title = "Siddartho Sarker Bipro — Software & AI Engineer";
 const description =
-  "Portfolio of Siddartho Sarker Bipro. Software Engineer, AI Research Engineer, and Full Stack Developer.";
+  "CSE student, software & AI engineer. Full-stack, AI research, robotics. Dhaka, Bangladesh.";
 
 export const metadata: Metadata = {
   title,
@@ -56,11 +57,18 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(spaceGrotesk.variable, geistSans.variable, "font-sans", geist.variable)}
+      className={cn(
+        spaceGrotesk.variable,
+        geistSans.variable,
+        "font-sans",
+        geist.variable,
+      )}
     >
       <body className="font-body antialiased bg-brand-bg text-brand-text">
         <StructuredData />
-        <SiteChrome>{children}</SiteChrome>
+        <PortfolioShell>
+          <SiteChrome>{children}</SiteChrome>
+        </PortfolioShell>
       </body>
     </html>
   );
