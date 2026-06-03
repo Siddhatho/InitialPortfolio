@@ -4,33 +4,30 @@ import { getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-function readEnv(name) {
-  return process.env[name];
-}
-
+/** Static access required — Next.js only inlines literal process.env.KEY names. */
 export function getFirebaseConfig() {
   return {
     apiKey:
-      readEnv("NEXT_PUBLIC_FIREBASE_API_KEY") ??
-      readEnv("REACT_APP_FIREBASE_API_KEY"),
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY ??
+      process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain:
-      readEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN") ??
-      readEnv("REACT_APP_FIREBASE_AUTH_DOMAIN"),
+      process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ??
+      process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
     projectId:
-      readEnv("NEXT_PUBLIC_FIREBASE_PROJECT_ID") ??
-      readEnv("REACT_APP_FIREBASE_PROJECT_ID"),
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ??
+      process.env.REACT_APP_FIREBASE_PROJECT_ID,
     storageBucket:
-      readEnv("NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET") ??
-      readEnv("REACT_APP_FIREBASE_STORAGE_BUCKET"),
+      process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ??
+      process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
     messagingSenderId:
-      readEnv("NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID") ??
-      readEnv("REACT_APP_FIREBASE_MESSAGING_SENDER_ID"),
+      process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ??
+      process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
     appId:
-      readEnv("NEXT_PUBLIC_FIREBASE_APP_ID") ??
-      readEnv("REACT_APP_FIREBASE_APP_ID"),
+      process.env.NEXT_PUBLIC_FIREBASE_APP_ID ??
+      process.env.REACT_APP_FIREBASE_APP_ID,
     measurementId:
-      readEnv("NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID") ??
-      readEnv("REACT_APP_FIREBASE_MEASUREMENT_ID"),
+      process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID ??
+      process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
   };
 }
 
@@ -49,6 +46,11 @@ function ensureFirebase() {
   }
 
   if (!isFirebaseConfigured()) {
+    if (process.env.NODE_ENV === "development") {
+      console.warn(
+        "[Firebase] Missing env vars. Add REACT_APP_FIREBASE_* or NEXT_PUBLIC_FIREBASE_* to .env.local and restart the dev server.",
+      );
+    }
     return false;
   }
 
