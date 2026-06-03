@@ -3,6 +3,8 @@
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
+import PortfolioEffects from "@/components/layout/PortfolioEffects";
+
 const SplashScreen = dynamic(() => import("@/components/SplashScreen"), {
   ssr: false,
 });
@@ -16,19 +18,16 @@ const BackgroundCanvas = dynamic(
 const Terminal = dynamic(() => import("@/components/Terminal"), {
   ssr: false,
 });
-const MusicPlayer = dynamic(() => import("@/components/MusicPlayer"), {
-  ssr: false,
-});
 
 export default function PortfolioShell({ children }: { children: ReactNode }) {
   return (
     <>
+      <PortfolioEffects />
       <SplashScreen />
       <CustomCursor />
       <BackgroundCanvas />
       <div className="relative z-[3]">{children}</div>
       <Terminal />
-      <MusicPlayer />
     </>
   );
 }

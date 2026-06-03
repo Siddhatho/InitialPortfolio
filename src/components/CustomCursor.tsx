@@ -89,6 +89,7 @@ export default function CustomCursor() {
   return (
     <>
       <div
+        id="cur-r"
         ref={ringRef}
         style={{
           ...shared,
@@ -99,6 +100,7 @@ export default function CustomCursor() {
         }}
       />
       <div
+        id="cur"
         ref={dotRef}
         style={{
           ...shared,

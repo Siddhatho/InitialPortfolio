@@ -87,8 +87,15 @@ export default function Skills() {
           display: flex;
           flex-wrap: wrap;
           gap: 0.4rem;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+        }
+        .skills-card__pills li {
+          display: contents;
         }
         .skills-pill {
+          display: inline-block;
           font-family: var(--fm);
           font-size: 10px;
           color: var(--text-s);
@@ -119,11 +126,13 @@ export default function Skills() {
                 </span>
                 <span className="skills-card__name">{card.name}</span>
               </div>
-              <div className="skills-card__pills">
+              <ul className="skills-card__pills">
                 {card.skills.map((skill) => (
-                  <SkillCapsule key={skill} label={skill} />
+                  <li key={skill}>
+                    <SkillCapsule label={skill} />
+                  </li>
                 ))}
-              </div>
+              </ul>
             </article>
           ))}
         </div>

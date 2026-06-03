@@ -5,6 +5,7 @@ import {
   BriefcaseBusiness,
   Code2,
   LogOut,
+  Mail,
   Menu,
   UserRoundCog,
   X,
@@ -14,10 +15,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useAuth } from "@/components/cms/AuthProvider";
+import { useUnreadMessageCount } from "@/components/cms/MessagesPage";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Analytics", icon: BarChart3 },
+  { href: "/dashboard/messages", label: "Messages", icon: Mail },
   { href: "/dashboard/projects", label: "Projects", icon: BriefcaseBusiness },
   { href: "/dashboard/skills", label: "Skills", icon: Code2 },
   { href: "/dashboard/experience", label: "Experience", icon: UserRoundCog },
@@ -32,6 +35,7 @@ export default function DashboardShell({
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const unreadMessages = useUnreadMessageCount();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -88,7 +92,12 @@ export default function DashboardShell({
                   onClick={() => setOpen(false)}
                 >
                   <Icon className="h-4 w-4" />
-                  {item.label}
+                  <span className="flex-1">{item.label}</span>
+                  {item.href === "/dashboard/messages" && unreadMessages > 0 ? (
+                    <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                      {unreadMessages}
+                    </span>
+                  ) : null}
                 </Link>
               );
             })}

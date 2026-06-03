@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useReducedMotion } from "framer-motion";
 
 import RoleSwitcher from "@/components/hero/RoleSwitcher";
-import { useMagnetic } from "@/hooks/useMagnetic";
 
 const TICKER_TEXT =
   "⟩ Currently exploring: LLM Fine-tuning · RAG Systems · Embedded AI · Computer Vision · Neural Architecture Search · Robotics Control ·";
@@ -22,16 +21,17 @@ function HeroButton({
   download?: boolean;
   children: ReactNode;
 }) {
-  const ref = useMagnetic<HTMLAnchorElement>(0.1);
   const className =
-    variant === "primary" ? "hero-btn hero-btn--primary" : "hero-btn hero-btn--secondary";
+    variant === "primary"
+      ? "hero-btn hero-btn--primary bp"
+      : "hero-btn hero-btn--secondary bo";
 
   if (download || href.startsWith("http")) {
     return (
       <a
-        ref={ref}
         href={href}
         className={className}
+        data-magnetic
         download={download || undefined}
       >
         {children}
@@ -40,7 +40,7 @@ function HeroButton({
   }
 
   return (
-    <Link ref={ref} href={href} className={className}>
+    <Link href={href} className={className} data-magnetic>
       {children}
     </Link>
   );
@@ -237,7 +237,6 @@ export default function Hero() {
         }
         .hero-btn--primary:hover {
           background: color-mix(in srgb, var(--violet) 82%, var(--bg));
-          transform: translateY(-2px);
           box-shadow: 0 10px 28px color-mix(in srgb, var(--violet) 35%, transparent);
         }
         .hero-btn--secondary {
@@ -247,7 +246,6 @@ export default function Hero() {
         }
         .hero-btn--secondary:hover {
           border-color: var(--accent);
-          transform: translateY(-2px);
         }
         .hero__scroll {
           position: absolute;

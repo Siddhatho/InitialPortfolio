@@ -1,42 +1,38 @@
-import { GitBranch, Link as LinkIcon, Mail } from "lucide-react";
-
-import { socials } from "@/data/socials";
-
-const ICONS = {
-  github: GitBranch,
-  linkedin: LinkIcon,
-  mail: Mail,
-} as const;
-
 export default function Footer() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="border-t border-white/5 bg-brand-bg">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-10 md:flex-row md:px-8">
-        <p className="text-sm text-brand-muted">
-          Siddartho Sarker Bipro © {year}
-        </p>
+    <>
+      <style>{`
+        .site-footer {
+          border-top: 1px solid var(--border);
+          text-align: center;
+          padding: 2.2rem 1.2rem;
+          font-family: var(--fm);
+          font-size: 11px;
+          color: var(--text-m);
+        }
+        .site-footer__line {
+          margin: 0;
+          line-height: 1.6;
+        }
+        .site-footer__line--sub {
+          margin-top: 0.35rem;
+          opacity: 0.35;
+          font-size: 10px;
+        }
+        .site-footer__name {
+          color: color-mix(in srgb, var(--accent) 55%, transparent);
+        }
+      `}</style>
 
-        <div className="flex items-center gap-4">
-          {socials.map((s) => {
-            const Icon = ICONS[s.icon as keyof typeof ICONS];
-            if (!Icon) return null;
-            return (
-              <a
-                key={s.href}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={s.label}
-                className="text-brand-muted transition-colors hover:text-brand-text"
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            );
-          })}
-        </div>
-      </div>
-    </footer>
+      <footer className="site-footer">
+        <p className="site-footer__line">
+          Designed &amp; built by{" "}
+          <span className="site-footer__name">Siddartho Sarker Bipro</span> · 2026
+        </p>
+        <p className="site-footer__line site-footer__line--sub">
+          Designed in Figma · Built in Cursor · Debugged at 2am ☕
+        </p>
+      </footer>
+    </>
   );
 }
