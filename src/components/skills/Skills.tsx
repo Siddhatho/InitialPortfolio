@@ -1,38 +1,133 @@
-import { skills } from "@/data/skills";
-
-import Container from "@/components/layout/Container";
-import AnimateSection from "@/components/ui/AnimateSection";
-import SectionHeading from "@/components/ui/SectionHeading";
 import SkillCapsule from "@/components/skills/SkillCapsule";
 
+const SKILL_CARDS = [
+  {
+    icon: "⚛",
+    name: "Frontend",
+    skills: ["Next.js", "React", "Tailwind", "TypeScript"],
+  },
+  {
+    icon: "⚙",
+    name: "Backend",
+    skills: ["Django", "Flask", "MySQL", "REST APIs"],
+  },
+  {
+    icon: "🧠",
+    name: "AI/Research",
+    skills: ["Python", "LLM Workflows", "Prompt Eng."],
+  },
+  {
+    icon: "🔧",
+    name: "Embedded",
+    skills: ["Arduino", "C++", "Sensors", "Robotics"],
+  },
+  {
+    icon: "🛠",
+    name: "Tools",
+    skills: ["Git", "Vercel", "Firebase", "Linux", "Unity"],
+  },
+] as const;
+
 export default function Skills() {
-  const categories = Array.from(new Set(skills.map((s) => s.category)));
-
   return (
-    <section id="skills" className="py-20">
-      <Container>
-        <SectionHeading title="Skills" />
+    <>
+      <style>{`
+        .skills {
+          padding: 5rem 3rem;
+        }
+        .skills__header {
+          max-width: 1120px;
+          margin: 0 auto 2.5rem;
+        }
+        .skills__title {
+          font-family: var(--fd);
+          font-weight: 800;
+          font-size: clamp(1.75rem, 3vw, 2.25rem);
+          color: var(--text);
+          margin: 0;
+        }
+        .skills__grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+          gap: 0.9rem;
+          max-width: 1120px;
+          margin: 0 auto;
+        }
+        .skills-card {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: 11px;
+          padding: 1.1rem;
+          transition:
+            transform 0.2s ease,
+            border-color 0.2s ease;
+        }
+        .skills-card:hover {
+          transform: translateY(-3px);
+          border-color: var(--border-h);
+        }
+        .skills-card__head {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          margin-bottom: 0.85rem;
+        }
+        .skills-card__icon {
+          font-size: 1.1rem;
+          line-height: 1;
+          opacity: 0.7;
+        }
+        .skills-card__name {
+          font-family: var(--fb);
+          font-size: 13px;
+          font-weight: 600;
+          color: var(--text);
+        }
+        .skills-card__pills {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.4rem;
+        }
+        .skills-pill {
+          font-family: var(--fm);
+          font-size: 10px;
+          color: var(--text-s);
+          padding: 0.2rem 0.45rem;
+          border-radius: 4px;
+          border: 1px solid var(--border);
+          transition:
+            border-color 0.2s ease,
+            color 0.2s ease;
+        }
+        .skills-pill:hover {
+          border-color: var(--border-h);
+          color: var(--text);
+        }
+      `}</style>
 
-        <AnimateSection className="mt-10">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {categories.map((category) => {
-              const items = skills.filter((s) => s.category === category);
-              return (
-                <div key={category}>
-                  <p className="mb-3 text-xs font-mono uppercase tracking-widest text-brand-blue">
-                    {category}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {items.map((skill) => (
-                      <SkillCapsule key={`${category}-${skill.name}`} skill={skill} />
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </AnimateSection>
-      </Container>
-    </section>
+      <section id="skills" className="skills">
+        <div className="skills__header">
+          <h2 className="skills__title">Skills</h2>
+        </div>
+
+        <div className="skills__grid">
+          {SKILL_CARDS.map((card) => (
+            <article key={card.name} className="skills-card">
+              <div className="skills-card__head">
+                <span className="skills-card__icon" aria-hidden="true">
+                  {card.icon}
+                </span>
+                <span className="skills-card__name">{card.name}</span>
+              </div>
+              <div className="skills-card__pills">
+                {card.skills.map((skill) => (
+                  <SkillCapsule key={skill} label={skill} />
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

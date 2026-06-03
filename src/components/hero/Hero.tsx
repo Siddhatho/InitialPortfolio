@@ -1,208 +1,360 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { GitBranch, Link as LinkIcon, Mail } from "lucide-react";
+import type { ReactNode } from "react";
 
-import { socials } from "@/data/socials";
-import { fadeUp } from "@/lib/motion";
-import AnimateSection from "@/components/ui/AnimateSection";
-import GlowButton from "@/components/ui/GlowButton";
+import Link from "next/link";
+import { useReducedMotion } from "framer-motion";
+
 import RoleSwitcher from "@/components/hero/RoleSwitcher";
+import { useMagnetic } from "@/hooks/useMagnetic";
 
-const ICONS = {
-  github: GitBranch,
-  linkedin: LinkIcon,
-  mail: Mail,
-} as const;
+const TICKER_TEXT =
+  "⟩ Currently exploring: LLM Fine-tuning · RAG Systems · Embedded AI · Computer Vision · Neural Architecture Search · Robotics Control ·";
+
+function HeroButton({
+  href,
+  variant,
+  download,
+  children,
+}: {
+  href: string;
+  variant: "primary" | "secondary";
+  download?: boolean;
+  children: ReactNode;
+}) {
+  const ref = useMagnetic<HTMLAnchorElement>(0.1);
+  const className =
+    variant === "primary" ? "hero-btn hero-btn--primary" : "hero-btn hero-btn--secondary";
+
+  if (download || href.startsWith("http")) {
+    return (
+      <a
+        ref={ref}
+        href={href}
+        className={className}
+        download={download || undefined}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link ref={ref} href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
 
 export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section
-      id="home"
-      className="relative min-h-screen overflow-hidden bg-brand-bg"
-    >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(59,130,246,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(59,130,246,0.05) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }}
-      />
-
-      <div className="pointer-events-none absolute top-1/4 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-brand-blue/10 blur-2xl" />
-
-      <div className="relative mx-auto grid min-h-screen max-w-7xl grid-cols-1 items-center gap-12 px-6 py-24 md:grid-cols-2 md:px-8">
-        <AnimateSection className="space-y-6" delay={0}>
-          <motion.p
-            variants={fadeUp}
-            className="text-sm font-mono text-brand-muted"
-          >
-            Hi, I&apos;m
-          </motion.p>
-
-          <motion.h1
-            variants={fadeUp}
-            className="font-heading text-4xl font-bold text-brand-text lg:text-6xl"
-          >
-            Siddartho Sarker Bipro
-          </motion.h1>
-
-          <motion.div variants={fadeUp}>
-            <RoleSwitcher />
-          </motion.div>
-
-          <motion.p variants={fadeUp} className="max-w-xl text-brand-muted">
-            I build intelligent systems at the intersection of software
-            engineering and AI research. From embedded robotics to full-stack
-            platforms — I ship things that work.
-          </motion.p>
-
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4">
-            <GlowButton variant="primary" href="#projects">
-              View Projects
-            </GlowButton>
-            <GlowButton
-              variant="outline"
-              href="/resume.pdf"
-              download
-            >
-              Download Resume
-            </GlowButton>
-          </motion.div>
-
-          <motion.div variants={fadeUp} className="flex items-center gap-4">
-            {socials.slice(0, 3).map((s) => {
-              const Icon = ICONS[s.icon as keyof typeof ICONS];
-              if (!Icon) return null;
-              return (
-                <a
-                  key={s.href}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={s.label}
-                  className="text-brand-muted transition-colors hover:text-brand-blue"
-                >
-                  <Icon className="h-5 w-5" />
-                </a>
-              );
-            })}
-          </motion.div>
-        </AnimateSection>
-
-        <motion.div
-          className="flex items-center justify-center"
-          animate={shouldReduceMotion ? undefined : { y: [0, -8, 0] }}
-          transition={
-            shouldReduceMotion
-              ? undefined
-              : { repeat: Infinity, duration: 4, ease: "easeInOut" }
+    <>
+      <style>{`
+        @keyframes hero-fade-up {
+          from {
+            opacity: 0;
+            transform: translateY(14px);
           }
-        >
-          <svg
-            width="420"
-            height="320"
-            viewBox="0 0 420 320"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-[280px] w-[360px] md:h-[320px] md:w-[420px]"
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes hero-dot-pulse {
+          0%,
+          100% {
+            box-shadow: 0 0 0 0 color-mix(in srgb, var(--green) 45%, transparent);
+          }
+          50% {
+            box-shadow: 0 0 0 6px transparent;
+          }
+        }
+        @keyframes hero-scroll-pulse {
+          0%,
+          100% {
+            opacity: 0.35;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+        @keyframes hero-cursor-blink {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0;
+          }
+        }
+        @keyframes hero-ticker {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
+        }
+        .hero {
+          position: relative;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 9rem 3rem 4rem;
+          overflow: hidden;
+        }
+        .hero__inner {
+          max-width: 720px;
+          display: flex;
+          flex-direction: column;
+          gap: 1.25rem;
+        }
+        .hero-fade {
+          opacity: 0;
+          animation: hero-fade-up 0.75s ease forwards;
+        }
+        .hero-fade--reduced {
+          opacity: 1;
+          transform: none;
+          animation: none;
+        }
+        .hero__tag {
+          font-family: var(--fm);
+          font-size: 11px;
+          color: var(--accent);
+          text-transform: uppercase;
+          letter-spacing: 0.18em;
+          margin: 0;
+        }
+        .hero__name {
+          font-family: var(--fd);
+          font-weight: 800;
+          font-size: clamp(2.8rem, 5.5vw, 4.6rem);
+          line-height: 1.03;
+          color: var(--text);
+          margin: 0;
+        }
+        .hero__name em {
+          font-style: normal;
+          color: var(--accent);
+          display: block;
+        }
+        .hero-typewriter {
+          font-family: var(--fd);
+          font-weight: 700;
+          font-size: clamp(1rem, 2.2vw, 1.45rem);
+          color: var(--violet-s);
+          margin: 0;
+          min-height: 1.5em;
+        }
+        .hero-typewriter__cursor {
+          display: inline-block;
+          width: 2px;
+          height: 1em;
+          margin-left: 2px;
+          vertical-align: -0.1em;
+          background: var(--accent);
+          animation: hero-cursor-blink 1s step-end infinite;
+        }
+        .hero__status {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          width: fit-content;
+          padding: 6px 12px;
+          border-radius: 999px;
+          background: color-mix(in srgb, var(--green) 6%, transparent);
+          border: 1px solid color-mix(in srgb, var(--green) 14%, transparent);
+          font-family: var(--fm);
+          font-size: 11px;
+          color: var(--green);
+        }
+        .hero__status-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: var(--green);
+          animation: hero-dot-pulse 2s ease-in-out infinite;
+        }
+        .hero__bio {
+          font-family: var(--fb);
+          font-size: 14px;
+          line-height: 1.65;
+          color: var(--text-s);
+          max-width: 500px;
+          margin: 0;
+        }
+        .hero__ticker {
+          overflow: hidden;
+          max-width: 100%;
+          border-left: 2px solid color-mix(in srgb, var(--accent) 18%, transparent);
+          padding-left: 10px;
+        }
+        .hero__ticker-track {
+          display: flex;
+          width: max-content;
+          font-family: var(--fm);
+          font-size: 10px;
+          color: var(--text-m);
+          white-space: nowrap;
+          animation: hero-ticker 28s linear infinite;
+        }
+        .hero__ticker-track--paused {
+          animation: none;
+        }
+        .hero__ticker-item {
+          padding-right: 2rem;
+        }
+        .hero__buttons {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-top: 0.25rem;
+        }
+        .hero-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 12px 22px;
+          border-radius: 10px;
+          font-family: var(--fb);
+          font-size: 14px;
+          font-weight: 500;
+          text-decoration: none;
+          transition:
+            transform 0.2s ease,
+            background 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+        }
+        .hero-btn--primary {
+          background: var(--violet);
+          color: var(--text);
+          border: 1px solid transparent;
+        }
+        .hero-btn--primary:hover {
+          background: color-mix(in srgb, var(--violet) 82%, var(--bg));
+          transform: translateY(-2px);
+          box-shadow: 0 10px 28px color-mix(in srgb, var(--violet) 35%, transparent);
+        }
+        .hero-btn--secondary {
+          background: transparent;
+          color: var(--text);
+          border: 1px solid var(--border-h);
+        }
+        .hero-btn--secondary:hover {
+          border-color: var(--accent);
+          transform: translateY(-2px);
+        }
+        .hero__scroll {
+          position: absolute;
+          left: 50%;
+          bottom: 2rem;
+          transform: translateX(-50%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+        .hero__scroll-line {
+          width: 1px;
+          height: 36px;
+          background: linear-gradient(
+            to bottom,
+            var(--accent),
+            transparent
+          );
+          animation: hero-scroll-pulse 2s ease-in-out infinite;
+        }
+        .hero__scroll-label {
+          font-family: var(--fm);
+          font-size: 10px;
+          color: var(--text-m);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+        }
+      `}</style>
+
+      <section id="home" className="hero">
+        <div className="hero__inner">
+          <p
+            className={`hero__tag hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+            style={{ animationDelay: "0.3s" }}
           >
-            <defs>
-              <pattern
-                id="grid"
-                width="40"
-                height="40"
-                patternUnits="userSpaceOnUse"
-              >
-                <path
-                  d="M 40 0 L 0 0 0 40"
-                  stroke="rgba(59,130,246,0.18)"
-                  strokeWidth="1"
-                />
-              </pattern>
-            </defs>
+            // software engineer &amp; ai researcher · dhaka, bangladesh
+          </p>
 
-            <rect width="420" height="320" fill="url(#grid)" />
+          <h1
+            className={`hero__name hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+            style={{ animationDelay: "0.5s" }}
+          >
+            Siddartho
+            <em>Sarker Bipro</em>
+          </h1>
 
-            <line
-              x1="110"
-              y1="90"
-              x2="220"
-              y2="150"
-              stroke="rgba(59,130,246,0.3)"
-              strokeWidth="2"
-            />
-            <line
-              x1="220"
-              y1="150"
-              x2="310"
-              y2="110"
-              stroke="rgba(59,130,246,0.3)"
-              strokeWidth="2"
-            />
-            <line
-              x1="220"
-              y1="150"
-              x2="260"
-              y2="230"
-              stroke="rgba(59,130,246,0.3)"
-              strokeWidth="2"
-            />
+          <div
+            className={`hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+            style={{ animationDelay: "0.7s" }}
+          >
+            <RoleSwitcher />
+          </div>
 
-            <motion.circle
-              cx="110"
-              cy="90"
-              r="7"
-              fill="rgba(59,130,246,0.9)"
-              animate={shouldReduceMotion ? undefined : { opacity: [0.5, 1] }}
-              transition={
-                shouldReduceMotion
-                  ? undefined
-                  : { duration: 2, repeat: Infinity, repeatType: "mirror" }
-              }
-            />
-            <motion.circle
-              cx="220"
-              cy="150"
-              r="8"
-              fill="rgba(59,130,246,0.9)"
-              animate={shouldReduceMotion ? undefined : { opacity: [0.5, 1] }}
-              transition={
-                shouldReduceMotion
-                  ? undefined
-                  : { duration: 2, repeat: Infinity, repeatType: "mirror", delay: 0.2 }
-              }
-            />
-            <motion.circle
-              cx="310"
-              cy="110"
-              r="7"
-              fill="rgba(59,130,246,0.9)"
-              animate={shouldReduceMotion ? undefined : { opacity: [0.5, 1] }}
-              transition={
-                shouldReduceMotion
-                  ? undefined
-                  : { duration: 2, repeat: Infinity, repeatType: "mirror", delay: 0.4 }
-              }
-            />
-            <motion.circle
-              cx="260"
-              cy="230"
-              r="7"
-              fill="rgba(59,130,246,0.9)"
-              animate={shouldReduceMotion ? undefined : { opacity: [0.5, 1] }}
-              transition={
-                shouldReduceMotion
-                  ? undefined
-                  : { duration: 2, repeat: Infinity, repeatType: "mirror", delay: 0.6 }
-              }
-            />
-          </svg>
-        </motion.div>
-      </div>
-    </section>
+          <div
+            className={`hero__status hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+            style={{ animationDelay: "1s" }}
+          >
+            <span className="hero__status-dot" aria-hidden="true" />
+            <span>Open to internships &amp; collaborations</span>
+          </div>
+
+          <p
+            className={`hero__bio hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+            style={{ animationDelay: "0.9s" }}
+          >
+            I build intelligent systems at the intersection of software engineering
+            and AI research. From embedded robotics to full-stack platforms — I
+            ship things that work.
+          </p>
+
+          <div
+            className={`hero__ticker hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+            style={{ animationDelay: "1.1s" }}
+          >
+            <div
+              className={`hero__ticker-track${shouldReduceMotion ? " hero__ticker-track--paused" : ""}`}
+            >
+              <span className="hero__ticker-item">{TICKER_TEXT}</span>
+              <span className="hero__ticker-item" aria-hidden="true">
+                {TICKER_TEXT}
+              </span>
+            </div>
+          </div>
+
+          <div
+            className={`hero__buttons hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+            style={{ animationDelay: "1.2s" }}
+          >
+            <HeroButton href="#projects" variant="primary">
+              View Projects
+            </HeroButton>
+            <HeroButton href="/resume.pdf" variant="secondary" download>
+              Download Resume
+            </HeroButton>
+          </div>
+        </div>
+
+        <div
+          className={`hero__scroll hero-fade${shouldReduceMotion ? " hero-fade--reduced" : ""}`}
+          style={{ animationDelay: "1.4s" }}
+          aria-hidden="true"
+        >
+          <span className="hero__scroll-line" />
+          <span className="hero__scroll-label">scroll</span>
+        </div>
+      </section>
+    </>
   );
 }

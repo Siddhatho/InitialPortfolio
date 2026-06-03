@@ -2,35 +2,78 @@
 
 import { useEffect, useState } from "react";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 
-const ROLES = ["Software Engineer", "AI Research Engineer", "Full Stack Developer"] as const;
+const ROLES = [
+  "Software Engineer",
+  "AI Research Engineer",
+  "Full Stack Developer",
+  "Robotics Builder",
+  "Systems Architect",
+] as const;
+
+const PAUSE_MS = 2200;
+const TYPE_MS = 60;
+const DELETE_MS = 40;
 
 export default function RoleSwitcher() {
-  const [index, setIndex] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+  const [text, setText] = useState(shouldReduceMotion ? ROLES[0] : "");
 
   useEffect(() => {
-    const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % ROLES.length);
-    }, 3000);
+    if (shouldReduceMotion) {
+      setText(ROLES[0]);
+      return;
+    }
 
-    return () => window.clearInterval(id);
-  }, []);
+    let roleIndex = 0;
+    let charIndex = 0;
+    let deleting = false;
+    let timeoutId = 0;
+
+    const schedule = (fn: () => void, ms: number) => {
+      timeoutId = window.setTimeout(fn, ms);
+    };
+
+    const tick = () => {
+      const role = ROLES[roleIndex];
+
+      if (!deleting) {
+        charIndex += 1;
+        setText(role.slice(0, charIndex));
+
+        if (charIndex >= role.length) {
+          deleting = true;
+          schedule(tick, PAUSE_MS);
+          return;
+        }
+
+        schedule(tick, TYPE_MS);
+        return;
+      }
+
+      charIndex -= 1;
+      setText(role.slice(0, charIndex));
+
+      if (charIndex <= 0) {
+        deleting = false;
+        roleIndex = (roleIndex + 1) % ROLES.length;
+        schedule(tick, TYPE_MS);
+        return;
+      }
+
+      schedule(tick, DELETE_MS);
+    };
+
+    schedule(tick, TYPE_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [shouldReduceMotion]);
 
   return (
-    <div className="mt-4 h-[32px] md:h-[40px]">
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={ROLES[index]}
-          className="text-xl md:text-2xl font-heading text-brand-blue font-medium"
-          initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
-          transition={{ duration: 0.4 }}
-        >
-          {ROLES[index]}
-        </motion.span>
-      </AnimatePresence>
-    </div>
+    <p className="hero-typewriter" aria-live="polite">
+      <span>{text}</span>
+      <span className="hero-typewriter__cursor" aria-hidden="true" />
+    </p>
   );
 }
