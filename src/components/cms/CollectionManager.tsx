@@ -15,7 +15,7 @@ import {
 import { Edit3, Plus, Trash2, X } from "lucide-react";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
-import { db } from "@/firebase";
+import { getClientDb } from "@/firebase";
 
 type FieldType = "text" | "textarea" | "number" | "list" | "date";
 
@@ -90,6 +90,12 @@ export default function CollectionManager({
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    const db = getClientDb();
+    if (!db) {
+      setLoading(false);
+      return;
+    }
+
     const q = query(collection(db, collectionName), orderBy("createdAt", "desc"));
 
     return onSnapshot(
@@ -137,6 +143,12 @@ export default function CollectionManager({
       return acc;
     }, {});
 
+    const db = getClientDb();
+    if (!db) {
+      setSaving(false);
+      return;
+    }
+
     try {
       if (editing) {
         await updateDoc(doc(db, collectionName, editing.id), {
@@ -161,6 +173,8 @@ export default function CollectionManager({
     const confirmed = window.confirm("Delete this entry?");
 
     if (confirmed) {
+      const db = getClientDb();
+      if (!db) return;
       await deleteDoc(doc(db, collectionName, id));
     }
   }

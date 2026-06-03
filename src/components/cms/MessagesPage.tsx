@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-import { db } from "@/firebase";
+import { getClientDb } from "@/firebase";
 import { cn } from "@/lib/utils";
 
 type MessageRecord = {
@@ -42,6 +42,12 @@ export function useUnreadMessageCount() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    const db = getClientDb();
+    if (!db) {
+      setCount(0);
+      return;
+    }
+
     const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const unread = snapshot.docs.filter((item) => !item.data().read).length;
@@ -60,6 +66,12 @@ export default function MessagesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const db = getClientDb();
+    if (!db) {
+      setLoading(false);
+      return;
+    }
+
     const q = query(collection(db, "messages"), orderBy("timestamp", "desc"));
     const unsubscribe = onSnapshot(
       q,
@@ -79,6 +91,8 @@ export default function MessagesPage() {
   }, []);
 
   const markAsRead = async (id: string) => {
+    const db = getClientDb();
+    if (!db) return;
     await updateDoc(doc(db, "messages", id), { read: true });
   };
 

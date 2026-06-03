@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
-import { db } from "@/firebase";
+import { getClientDb } from "@/firebase";
 
 type FormState = "idle" | "loading" | "success" | "error";
 
@@ -41,6 +41,12 @@ export default function ContactForm() {
 
     if (!isValidEmail(trimmedEmail)) {
       setFieldError("Please enter a valid email address.");
+      return;
+    }
+
+    const db = getClientDb();
+    if (!db) {
+      setState("error");
       return;
     }
 

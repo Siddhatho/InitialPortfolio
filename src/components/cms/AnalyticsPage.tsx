@@ -16,7 +16,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { db } from "@/firebase";
+import { getClientDb } from "@/firebase";
 
 const collections = ["projects", "skills", "experience"] as const;
 const chartColors = ["#3B82F6", "#14B8A6", "#F59E0B"];
@@ -45,6 +45,12 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const db = getClientDb();
+    if (!db) {
+      setLoading(false);
+      return;
+    }
+
     const cache = new Map<string, Entry[]>();
     const unsubscribers = collections.map((name) =>
       onSnapshot(

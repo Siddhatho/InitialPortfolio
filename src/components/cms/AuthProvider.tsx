@@ -17,7 +17,7 @@ import {
   useState,
 } from "react";
 
-import { auth } from "@/firebase";
+import { getClientAuth } from "@/firebase";
 
 type AuthContextValue = {
   user: User | null;
@@ -42,6 +42,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const auth = getClientAuth();
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
     return onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser && !isAllowedUser(currentUser)) {
         await signOut(auth);
@@ -56,6 +62,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
+    const auth = getClientAuth();
+    if (!auth) {
+      throw new Error("Firebase is not configured.");
+    }
+
     const credential = await signInWithEmailAndPassword(auth, email, password);
 
     if (!isAllowedUser(credential.user)) {
@@ -65,6 +76,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const loginWithGoogle = useCallback(async () => {
+    const auth = getClientAuth();
+    if (!auth) {
+      throw new Error("Firebase is not configured.");
+    }
+
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
 
@@ -77,6 +93,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
+    const auth = getClientAuth();
+    if (!auth) return;
     await signOut(auth);
   }, []);
 
