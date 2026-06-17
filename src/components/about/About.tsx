@@ -1,5 +1,4 @@
 "use client";
-
 import type { ReactNode } from "react";
 import { useState } from "react";
 
@@ -34,11 +33,6 @@ const NOW_ROWS = [
   },
 ] as const;
 
-const TERMINAL_LINES = [
-  "$ whoami → siddartho — cse student, builder, dreamer",
-  "$ cat interests.txt → AI research, robotics, web dev, game dev",
-  "$ echo $STATUS → open_to_opportunities=true",
-] as const;
 
 function AboutButton({
   href,
@@ -381,22 +375,6 @@ export default function About() {
                   </span>
                 </div>
               ))}
-            </div>
-
-            <div className="about__terminal" aria-hidden="true">
-              <div className="about__terminal-bar">
-                <div className="about__terminal-dots">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-                <span className="about__terminal-title">about.sh</span>
-              </div>
-              <div className="about__terminal-body">
-                {TERMINAL_LINES.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </div>
             </div>
 
             <div className="about__actions">

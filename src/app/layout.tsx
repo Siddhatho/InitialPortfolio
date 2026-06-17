@@ -3,6 +3,7 @@ import { Space_Grotesk, Geist } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 
+import Terminal from "@/components/Terminal";
 import MusicPlayer from "@/components/MusicPlayer";
 import PortfolioShell from "@/components/layout/PortfolioShell";
 import StructuredData from "@/components/seo/StructuredData";
@@ -71,6 +72,7 @@ export default function RootLayout({
           <SiteChrome>{children}</SiteChrome>
         </PortfolioShell>
         <MusicPlayer />
+        <Terminal />
       </body>
     </html>
   );
